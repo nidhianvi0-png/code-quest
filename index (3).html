@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CodeQuest – Coding Challenge Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- AUTH PAGE -->
+  <div id="authPage">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <h1>⚡ CodeQuest</h1>
+        <p>Track. Compete. Level Up.</p>
+      </div>
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="loginEmail" placeholder="you@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="loginPassword" placeholder="••••••••"/>
+        </div>
+        <button class="submit-btn" onclick="login()">Login →</button>
+        <div class="auth-msg" id="loginMsg"></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerForm" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" type="text" id="regUsername" placeholder="coolcoder123"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="regEmail" placeholder="you@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="regPassword" placeholder="Min 6 characters"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">LeetCode Username (optional)</label>
+          <input class="form-input" type="text" id="regLeetcode" placeholder="your_leetcode"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">HackerRank Username (optional)</label>
+          <input class="form-input" type="text" id="regHackerrank" placeholder="your_hackerrank"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">CodeChef Username (optional)</label>
+          <input class="form-input" type="text" id="regCodechef" placeholder="your_codechef"/>
+        </div>
+        <button class="submit-btn" onclick="register()">Create Account →</button>
+        <div class="auth-msg" id="registerMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="appPage">
+    <nav class="topnav">
+      <div class="nav-logo">⚡ CodeQuest</div>
+      <div class="nav-right">
+        <span class="nav-user" id="navUsername"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showSection('dashboard')">📊 Dashboard</button>
+      <button class="nav-tab" onclick="showSection('leaderboard')">🏆 Leaderboard</button>
+      <button class="nav-tab" onclick="showSection('log')">➕ Log Challenge</button>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div id="dashboard" class="section active">
+        <div class="stats-grid">
+          <div class="stat-card" style="--accent-color: var(--orange)">
+            <div class="stat-label">LeetCode</div>
+            <div class="stat-num" id="lcTotal">0</div>
+            <div class="stat-sub">problems solved</div>
+          </div>
+          <div class="stat-card" style="--accent-color: var(--blue)">
+            <div class="stat-label">HackerRank</div>
+            <div class="stat-num" id="hrTotal">0</div>
+            <div class="stat-sub">problems solved</div>
+          </div>
+          <div class="stat-card" style="--accent-color: var(--purple)">
+            <div class="stat-label">CodeChef</div>
+            <div class="stat-num" id="ccTotal">0</div>
+            <div class="stat-sub">problems solved</div>
+          </div>
+          <div class="stat-card" style="--accent-color: var(--primary)">
+            <div class="stat-label">Total</div>
+            <div class="stat-num" id="totalAll">0</div>
+            <div class="stat-sub">all platforms</div>
+          </div>
+        </div>
+
+        <div class="logs-table">
+          <div class="logs-header">📋 My Recent Logs</div>
+          <div class="log-row log-row-head">
+            <span>Date</span>
+            <span>Platform</span>
+            <span>Solved</span>
+            <span class="note-col">Notes</span>
+          </div>
+          <div id="myLogs">
+            <div class="empty">
+              <div class="empty-icon">📭</div>
+              <p>No logs yet! Go to "Log Challenge" to add your first entry.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD -->
+      <div id="leaderboard" class="section">
+        <div class="leader-card">
+          <div class="leader-header">
+            <h3>🏆 Global Leaderboard</h3>
+            <button class="refresh-btn" onclick="loadLeaderboard()">↻ Refresh</button>
+          </div>
+          <div class="leader-row head">
+            <span>#</span>
+            <span>Username</span>
+            <span>Total</span>
+            <span>LeetCode</span>
+            <span class="lc-col">HackerRank</span>
+            <span class="cc-col">CodeChef</span>
+          </div>
+          <div id="leaderboardRows">
+            <div class="empty">
+              <div class="empty-icon">⏳</div>
+              <p>Loading leaderboard...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOG CHALLENGE -->
+      <div id="log" class="section">
+        <div class="add-form">
+          <h3>➕ Log Today's Progress</h3>
+          <div class="form-row">
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Platform</label>
+              <select class="platform-select" id="logPlatform">
+                <option value="leetcode">🟠 LeetCode</option>
+                <option value="hackerrank">🔵 HackerRank</option>
+                <option value="codechef">🟣 CodeChef</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Problems Solved</label>
+              <input class="form-input" type="number" id="logCount" min="1" max="100" placeholder="e.g. 5"/>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Date</label>
+              <input class="form-input" type="date" id="logDate"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes (optional)</label>
+            <input class="form-input" type="text" id="logNotes" placeholder="e.g. Two Sum, Binary Search..."/>
+          </div>
+          <button class="submit-btn" style="width:auto; padding: 12px 32px;" onclick="logChallenge()">
+            Submit Log →
+          </button>
+        </div>
+
+        <div class="logs-table">
+          <div class="logs-header">📋 All My Logs</div>
+          <div class="log-row log-row-head">
+            <span>Date</span>
+            <span>Platform</span>
+            <span>Solved</span>
+            <span class="note-col">Notes</span>
+          </div>
+          <div id="allLogs">
+            <div class="empty">
+              <div class="empty-icon">📭</div>
+              <p>No logs yet!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
