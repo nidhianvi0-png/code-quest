@@ -1,1 +1,23 @@
-# code-quest
+# ⚡ CodeQuest – Coding Challenge Tracker
+
+A full-stack web app where students can log daily coding 
+progress across LeetCode, HackerRank & CodeChef and 
+compete on a live leaderboard!
+
+## 🌐 Live Demo
+[CodeQuest Live](https://nidhianvi0-png.github.io/code-quest/codequest.html)
+
+## ✨ Features
+- 🔐 User Registration & Login
+- ➕ Log daily challenges (LeetCode, HackerRank, CodeChef)
+- 🏆 Live Global Leaderboard
+- 📊 Personal Stats Dashboard
+
+## 🛠️ Tech Stack
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Supabase (Database + Auth)
+- **Hosting:** GitHub Pages
+
+## 👩‍💻 Developer
+**Anvi Nidhi**
+B.Tech CSE — Lingaya's Vidyapeeth, Faridabad (2025–2029)
